@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: 检出
         uses: actions/checkout@v4
+        with:
+ref: main # 修改为你的主分支，master /main
       - name: 拉取Gitee仓库
         env:
           GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
