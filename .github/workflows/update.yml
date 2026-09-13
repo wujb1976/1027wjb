@@ -3,11 +3,11 @@ on:
   workflow_dispatch:
   # push:
   schedule:
-    - cron: 2 * * * *
+    - cron: * 2 * * *
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 5
     steps:
       - name: 检出
         uses: actions/checkout@v4
