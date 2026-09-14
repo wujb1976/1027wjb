@@ -1,33 +1,39 @@
+version: '1.0'
 name: update
-on:
-  workflow_dispatch:
-  # push:
+displayName: update
+triggers:
+  trigger: auto
   schedule:
-    - cron: 0 5 * * *
-jobs:
-  run:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
+    - cron: 0 6 * * *
+variables:
+  global:
+    - TOKEN
+stages:
+  - name: update
+    displayName: 更新
+    strategy: naturally
+    trigger: auto
+    executor: []
     steps:
-      - name: 检出
-        uses: actions/checkout@v4
-
-      - name: 拉取Gitee仓库
-             
-        env:
-          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
-        run: git clone https://dream-deve:${GITEE_TOKEN}@gitee.com/dream-deve/migu_video.git
-      - name: 更新内容
-        run: |
-          cp migu_video/interface.txt .
-          cp migu_video/playback.xml .
-          rm -rf migu_video
-      - name: 推送
-        run: |
-          if ! git diff --quiet --exit-code || [ -n "$(git status --porcelain)" ]; then
-            git config user.name "GitHub Actions"
-            git config user.email "actions@github.com"
-            git add .
-            git commit -m "Update by GitHub Actions"
-            git push
-          fi
+      - step: build@nodejs
+        name: update_files
+        displayName: 更新文件
+        nodeVersion: 21.5.0
+        commands:
+          - git clone https://dream-deve:${TOKEN}@gitee.com/dream-deve/migu_video.git
+          - cd migu_video
+          - '# 设置NPM源，提升安装速度'
+          - npm config set registry https://registry.npmmirror.com
+          - '# 执行编译命令 '
+          - npm install && node fetchURLByAndroid720p.js
+          - git config user.name "Gitee流水线"
+          - git config user.email "actions@githee.com"
+          - git add .
+          - '# gitee流水线提交 '
+          - git diff --quiet && git diff --staged --quiet || git commit -m "Update by Gitee流水线"
+          - git push
+        caches: []
+        notify: []
+        strategy:
+          retry: '0'
+          timeout: 4
