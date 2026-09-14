@@ -4,7 +4,7 @@ displayName: update
 triggers:
   trigger: auto
   schedule:
-    - cron: '* 0 */6 * * ? *'
+    - cron: '0 6 * *  *'
 variables:
   global:
     - TOKEN
