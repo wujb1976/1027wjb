@@ -11,9 +11,9 @@ jobs:
     steps:
       - name: 检出
         uses: actions/checkout@v4
-        with:
-ref: main # 修改为你的主分支，master /main
+
       - name: 拉取Gitee仓库
+             
         env:
           GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
         run: git clone https://dream-deve:${GITEE_TOKEN}@gitee.com/dream-deve/migu_video.git
